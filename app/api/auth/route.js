@@ -2,18 +2,15 @@ import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { compare } from "bcryptjs";
-import clientPromise from "../../../lib/mongodb";
+import clientPromise from "@/lib/mongodb";
 import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
-import jwt from "jsonwebtoken";
 
 export const authOptions = {
   providers: [
-    // 🔹 Google OAuth2.0
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
-    // 🔹 Credentials-based Authentication (Email & Password)
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -28,7 +25,7 @@ export const authOptions = {
         if (!user || !(await compare(credentials.password, user.password))) {
           throw new Error("Invalid email or password");
         }
-        
+
         return { email: user.email, id: user._id };
       },
     }),
@@ -36,26 +33,18 @@ export const authOptions = {
   adapter: MongoDBAdapter(clientPromise),
   session: { strategy: "jwt" },
   secret: process.env.NEXTAUTH_SECRET,
+  pages: { signIn: "/signin" },
   callbacks: {
-    async jwt({ token, account, user }) {
-      if (account) {
-        token.accessToken = jwt.sign(
-          { userId: user?.id, email: user?.email },
-          process.env.NEXTAUTH_SECRET,
-          { expiresIn: "1h" }
-        );
-      }
+    async jwt({ token, user }) {
+      if (user) token.userId = user.id;
       return token;
     },
     async session({ session, token }) {
       session.user.id = token.userId;
-      session.accessToken = token.accessToken;
       return session;
     },
   },
-  pages: {
-    signIn: "/auth/signin",
-  },
 };
 
-export default NextAuth(authOptions);
+const handler = NextAuth(authOptions);
+export { handler as GET, handler as POST };
