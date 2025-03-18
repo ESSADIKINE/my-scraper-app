@@ -1,3 +1,4 @@
+// scraper.js
 import puppeteer from 'puppeteer';
 import clientPromise from './app/lib/mongodb';
 
@@ -27,8 +28,6 @@ class GoogleMapsPuppeteerScraper {
       "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36"
     );
   }
-
-  // ... (include all the methods from your provided scraper class)
 
   async saveToMongoDB(businesses) {
     const client = await clientPromise;

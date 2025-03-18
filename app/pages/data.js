@@ -1,3 +1,4 @@
+// app/pages/data.js
 import { useEffect, useState } from 'react';
 
 export default function Data() {

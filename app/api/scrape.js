@@ -1,3 +1,4 @@
+// app/api/scrape.js
 import { getSession } from "next-auth/react";
 import GoogleMapsPuppeteerScraper from "../../scraper";
 

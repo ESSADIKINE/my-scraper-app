@@ -1,3 +1,4 @@
+// app/api/auth/signup.js
 import clientPromise from "../../lib/mongodb";
 import { hash } from "bcryptjs";
 

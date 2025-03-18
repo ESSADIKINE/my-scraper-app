@@ -1,6 +1,10 @@
+// app/page.js
 "use client";
 
 import { useState } from "react";
+import { signIn, useSession } from "next-auth/react";
+import * as XLSX from "xlsx";
+
 const Button = ({ children, ...props }) => (
   <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" {...props}>
     {children}
@@ -10,9 +14,6 @@ const Button = ({ children, ...props }) => (
 const Input = ({ ...props }) => (
   <input className="border border-gray-300 rounded p-2 w-full" {...props} />
 );
-
-import { signIn, useSession } from "next-auth/react";
-import * as XLSX from "xlsx";
 
 export default function ScraperApp() {
   const { data: session } = useSession();
@@ -89,30 +90,32 @@ export default function ScraperApp() {
       {results.length > 0 && (
         <div className="mt-8">
           <h2 className="text-xl font-semibold mb-4">Scraped Results</h2>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Name</TableCell>
-                <TableCell>Address</TableCell>
-                <TableCell>Phone</TableCell>
-                <TableCell>Website</TableCell>
-                <TableCell>Category</TableCell>
-                <TableCell>Email</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {results.map((business, index) => (
-                <TableRow key={index}>
-                  <TableCell>{business.name}</TableCell>
-                  <TableCell>{business.address}</TableCell>
-                  <TableCell>{business.phone}</TableCell>
-                  <TableCell>{business.website || "N/A"}</TableCell>
-                  <TableCell>{business.category || "N/A"}</TableCell>
-                  <TableCell>{business.email || "N/A"}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <div className="overflow-x-auto">
+            <table className="min-w-full bg-white border border-gray-300">
+              <thead>
+                <tr>
+                  <th className="px-4 py-2 border">Name</th>
+                  <th className="px-4 py-2 border">Address</th>
+                  <th className="px-4 py-2 border">Phone</th>
+                  <th className="px-4 py-2 border">Website</th>
+                  <th className="px-4 py-2 border">Category</th>
+                  <th className="px-4 py-2 border">Email</th>
+                </tr>
+              </thead>
+              <tbody>
+                {results.map((business, index) => (
+                  <tr key={index}>
+                    <td className="px-4 py-2 border">{business.name}</td>
+                    <td className="px-4 py-2 border">{business.address}</td>
+                    <td className="px-4 py-2 border">{business.phone}</td>
+                    <td className="px-4 py-2 border">{business.website || "N/A"}</td>
+                    <td className="px-4 py-2 border">{business.category || "N/A"}</td>
+                    <td className="px-4 py-2 border">{business.email || "N/A"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
           <div className="flex gap-4 mt-4">
             <Button onClick={exportToCSV}>Download CSV</Button>
             <Button onClick={exportToExcel}>Download Excel</Button>
