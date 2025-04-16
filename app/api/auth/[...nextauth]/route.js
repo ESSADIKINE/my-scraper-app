@@ -23,6 +23,7 @@ export const authOptions = {
         const db = client.db("my-scraper-app");
         const user = await db.collection("users").findOne({ email: credentials.email });
 
+        
         if (!user || !(await compare(credentials.password, user.password))) {
           throw new Error("Invalid email or password");
         }
